@@ -1,0 +1,129 @@
+﻿@model BusinessLayer.Entity.VM_Mix_Design_Entry
+<style>
+    .form-group > label {
+        font-weight: 800;
+    }
+</style>
+
+<style>
+    .subheader {
+        background-color: blue;
+        color: white;
+    }
+</style>
+
+<div class="pd-20 card-box mb-30">
+  
+    <div class="form-group row">
+        <div class="table-responsive">
+            <h4 class="text-blue h4">List Of Testing Schedule</h4>
+            <table class="table table-bordered" style="font-size:10px; padding:0px;  margin:0px;min-width:920px;" id="tblList">
+                <thead>
+                    <tr>
+                        <th style="width:100px;text-align:center;">SL NO</th>
+                        <th style="width:100px;text-align:center;">Test No</th>
+                        <th style="width:200px;text-align:center;">Test Name</th>
+                        <th style="width:200px;text-align:center;">Lab Name</th>
+                        <th style="width:100px;text-align:center;">Grade</th>
+                        <th style="width:200px;text-align:center;">Client</th>
+                        <th style="width:20px;text-align:center;"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyList">
+                    @for (int i = 0; i < Model.MIX_DESIGN_DATA_Dtl_List.Count(); i++)
+                    {
+
+                        <tr id="tr_@i">
+                            <td data-title="SL.No." style="text-align: center; padding-top: 17px;">
+                                <span id="spnSrNo_@i"> @(i + 1) </span>
+                            </td>
+
+                            <td data-title="Test No">
+                                @Html.DisplayFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].TEST_CODE, new { @class = "form-control cal numeric", @id = "txtTEST_CODE_" + i, @autocomplete = "off" })
+
+                                <span id="spnErr_txtTEST_CODE_@i" class=" field-validation-error"></span>
+                            </td>
+
+                            <td data-title="Test Name">
+                                @Html.DisplayFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].TEST_NAME, new { @class = "form-control", @id = "txtTEST_NAME_" + i, @data_placeholder = "Enter Test Name", @autocomplete = "off" })
+                                <span id="spnErr_txtTEST_NAME_@i" class=" field-validation-error"></span>
+                            </td>
+                            <td data-title="Lab Name">
+                                @Html.DisplayFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].LabName, new { @class = "form-control", @id = "txtLabName_" + i, @data_placeholder = "Enter Lab Name", @autocomplete = "off" })
+                                <span id="spnErr_txtLabName_@i" class=" field-validation-error"></span>
+                            </td>
+                            <td data-title="Grade">
+                                @Html.DisplayFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].Grade_Name, new { @class = "form-control", @id = "txtGrade_Name_" + i, @data_placeholder = "Enter Grade Name", @autocomplete = "off" })
+                                <span id="spnErr_txtGrade_Name_@i" class=" field-validation-error"></span>
+                            </td>
+                            <td data-title="Client">
+                                @Html.DisplayFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].custName, new { @class = "form-control", @id = "txtcustName_" + i, @data_placeholder = "Enter Client Name", @autocomplete = "off" })
+                                <span id="spnErr_txtcustName_@i" class=" field-validation-error"></span>
+                            </td>
+                            <td data-title="Select">
+                                @Html.CheckBoxFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].IsSelected, new { @class = "vmSTRATEGY" })                 
+                                @Html.HiddenFor(model => model.MIX_DESIGN_DATA_Dtl_List[i].hdnSelectedRowIds, new { @id = "hdnSelectedRowIds_" + i })
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+        </div>
+        <div class="col-md-12" style="padding-top:5px; padding-bottom:15px; padding-right:13px;text-align:center;">
+            <input type="submit" class="btn btn-success" value="OK" name="Save" style="width:auto;" id="btnSubmit" />
+            <input type="submit" class="btn btn-secondary" value="Skip" name="Skip" style="width:auto;" id="btnSkip" />
+            @Html.HiddenFor(X => X.hdnTrailDate, new { @id = "hdnTrailDate" })
+            @*@Html.HiddenFor(X => X.hdnSelectedRowIds, new { @id = "hdnSelectedRowIds" })*@
+        </div>
+     
+    </div>
+
+
+
+<script src="~/assets/js/jquery-2.1.4.min.js"></script>
+<script src="~/Scripts/Custom/customValidation.js"></script>
+
+<style>
+    input[type='checkbox'] {
+        -webkit-appearance: block;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 5px;
+        border: 2px solid #555;
+    }
+
+        input[type='checkbox']:checked {
+            background: #abd;
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#btnSubmit").on("click", function (e) {
+            if ($('.vmSTRATEGY:checked').length === 0) {
+                e.preventDefault();
+                alert('Please select at least one row.');
+            } else {
+                var selectedRows = [];
+                $('.vmSTRATEGY:checked').each(function () {
+                    var rowIndex = $(this).closest('tr').attr('id');
+                    var hiddenFieldId = '#hdnSelectedRowIds_' + rowIndex;
+                    var rowId = $(hiddenFieldId).val();
+                    selectedRows.push(rowId);
+                });
+                $('#hdnSelectedRowIds').val(selectedRows.join(','));
+                $('#frmMixDesignCal').submit();
+            }
+        });
+
+        $('.vmSTRATEGY').click(function () {
+            $('.vmSTRATEGY').not(this).prop('checked', false);
+        });
+    });
+</script>
+
